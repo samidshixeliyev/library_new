@@ -20,6 +20,6 @@ public interface BookMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void fromUpdateToEntity (BookUpdateRequest request, @MappingTarget Book book, Author author, Category category);
-    BookResponse fromEntityToResponse (Book book);
+    BookResponse fromEntityToResponse(Book book);
 
 }
