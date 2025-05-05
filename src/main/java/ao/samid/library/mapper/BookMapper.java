@@ -9,6 +9,7 @@ import ao.samid.library.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueCheckStrategy;
 
 @Mapper(componentModel = "spring", uses = {AuthorMapper.class, CategoryMapper.class})
 public interface BookMapper {
@@ -16,7 +17,7 @@ public interface BookMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Book fromCreateToEntity (BookCreateRequest request, Author author, Category category);
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "id", ignore = true,nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void fromUpdateToEntity (BookUpdateRequest request, @MappingTarget Book book, Author author, Category category);

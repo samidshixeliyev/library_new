@@ -9,10 +9,8 @@ import java.util.List;
 
 public interface IBookService {
     List<BookResponse> getAllBooks();
-    Book getBookById(Long id);
+    BookResponse getBookById(Long id);
     void saveBook(BookCreateRequest request);
-    void updateBook(Long id, BookUpdateRequest request);
+    void updateBook(BookUpdateRequest request);
     void deleteBook(Long id);
-
-    void saveBook(Book book);
 }
