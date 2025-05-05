@@ -34,20 +34,47 @@ public class BookService implements IBookService {
     public BookResponse getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::fromEntityToResponse)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> CustomException.builder()
+                        .code(404)
+                        .message("Kitab tapılmadı")
+                        .build());
     }
     @Override
     public void saveBook(BookCreateRequest request) {
-        Author author = authorRepository.findById(request.getAuthorId()).orElseThrow(() -> CustomException.builder().message("Author not found").code(404).build());
-        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> CustomException.builder().message("Category not found").code(404).build());
+        Author author = authorRepository
+                .findById(request.getAuthorId())
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Müəllif tapılmadı")
+                        .code(404)
+                        .build());
+        Category category = categoryRepository.
+                findById(request.getCategoryId())
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Kateqoriya tapılmadı")
+                        .code(404)
+                        .build());
         bookRepository.save(bookMapper.fromCreateToEntity(request,author,category));
     }
 
     @Override
     public void updateBook(BookUpdateRequest request) {
-        Book book = bookRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Book not found"));
-        Author author = authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new RuntimeException("Author not found"));
-        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+        Book book = bookRepository
+                .findById(request.getId())
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Kitab tapılmadı")
+                        .code(404)
+                        .build());
+        Author author = authorRepository
+                .findById(request.getAuthorId())
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Müəllif tapılmadı")
+                        .build());
+        Category category = categoryRepository
+                .findById(request.getCategoryId())
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Kateqoriya tapılmadı")
+                        .code(404)
+                        .build());
         bookMapper.fromUpdateToEntity(request,book,author,category);
         bookRepository.save(book);
     }

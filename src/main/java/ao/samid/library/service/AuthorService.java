@@ -5,6 +5,7 @@ import ao.samid.library.dto.request.AuthorUpdateRequest;
 import ao.samid.library.dto.response.AuthorDetailedResponse;
 import ao.samid.library.dto.response.AuthorResponse;
 import ao.samid.library.entity.Author;
+import ao.samid.library.handler.CustomException;
 import ao.samid.library.mapper.AuthorMapper;
 import ao.samid.library.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,12 @@ public class AuthorService implements IAuthorService {
     }
     @Override
     public AuthorResponse getAuthorById(Long id) {
-        return authorRepository.findById(id).map(authorMapper::fromEntityToResponse).orElseThrow(() -> new RuntimeException("Author not found"));
+        return authorRepository
+                .findById(id)
+                .map(authorMapper::fromEntityToResponse)
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Müəllif tapılmadı")
+                        .build());
     }
     @Override
     public AuthorResponse saveAuthor(AuthorCreateRequest request) {
@@ -37,7 +43,9 @@ public class AuthorService implements IAuthorService {
     }
     @Override
     public void updateAuthor(AuthorUpdateRequest request) {
-        Author author = authorRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("Author not found"));
+        Author author = authorRepository.findById(request.getId()).orElseThrow(() -> CustomException.builder()
+                .message("Müəllif tapılmadı")
+                .build());
         authorMapper.fromUpdateToEntity(author, request);
         authorRepository.save(author);
     }
@@ -51,6 +59,8 @@ public class AuthorService implements IAuthorService {
         return  authorRepository
                 .findById(id)
                 .map(authorMapper::fromEntityToDetailedResponse)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> CustomException.builder()
+                        .message("Müəllif tapılmadı")
+                        .build());
     }
 }

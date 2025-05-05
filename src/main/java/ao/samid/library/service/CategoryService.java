@@ -37,14 +37,23 @@ public class CategoryService implements ICategoryService{
     public void saveCategory(CategoryCreateRequest request) {
         // Category check edirik
         if(categoryRepository.existsByName(request.getName())){
-            throw  CustomException.builder().code(056).message("bRAT BU NE HEREKETDI").build();
+            throw  CustomException.builder()
+                    .code(404)
+                    .message("Kateqoriya tapılmadı")
+                    .build();
         }
         Category category = categoryMapper.fromCreateToEntity(request);
         categoryRepository.save(category);
     }
     @Override
     public void updateCategory(CategoryUpdateRequest request) {
-       Category category = categoryRepository.findById(request.getId()).orElseThrow(()->new RuntimeException("Category not found"));
+       Category category = categoryRepository
+               .findById(request.getId())
+               .orElseThrow(()->CustomException
+                       .builder()
+                       .code(404)
+                       .message("Kateqoriya tapılmadı")
+                       .build());
        categoryMapper.fromUpdateToEntity(request, category);
        categoryRepository.save(category);
     }
@@ -52,7 +61,10 @@ public class CategoryService implements ICategoryService{
     public CategoryDetailedResponse getDetailedCategory(Long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::fromEntityToDetailedResponse)
-                .orElseThrow(()->new RuntimeException("Category not found"));
+                .orElseThrow(()->CustomException.builder()
+                        .code(404)
+                        .message("Kateqoriya tapılmadı")
+                        .build());
     }
     @Override
     public void deleteCategory(Long id) {
